@@ -11,6 +11,8 @@ module DRb
   class DRbArPg
     attr_reader :uri
 
+    DefaultConnectTimeout = 1.0
+
     def self.open(uri, config)
       server_channel, = parse_uri(uri)
 
@@ -63,11 +65,14 @@ module DRb
       when :master
         # connect to server channel
         @conn.exec_update("NOTIFY #{@conn.quote_table_name("drbarpg_#{@notify_connection_id}")}, #{@conn.quote(@listen_connection_id)}");
+
         # wait for acknowledgement with peer channel
-        @pgconn.wait_for_notify do |channel, pid, payload|
+        timeout = config[:connect_timeout] || DefaultConnectTimeout
+        @pgconn.wait_for_notify(timeout) do |channel, pid, payload|
           @notify_connection_id = payload
           @notify_channel = @conn.quote_table_name("drbarpg__#{@notify_connection_id}")
         end
+        raise(DRbConnError, "timeout while connecting to server") unless @notify_channel
       when :slave
         @notify_channel = @conn.quote_table_name("drbarpg__#{@notify_connection_id}")
         # acknowledge with peer channel
