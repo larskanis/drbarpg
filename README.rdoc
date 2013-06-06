@@ -1,4 +1,5 @@
 = drbarpg
+{<img src="https://travis-ci.org/larskanis/drbarpg.png?branch=master" alt="Build Status" />}[https://travis-ci.org/larskanis/drbarpg]
 
 A protocol implementation for Distributed Ruby (DRb), supporting connections
 via a PostgreSQL server by using the LISTEN/NOTIFY event system.
