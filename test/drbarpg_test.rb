@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'drb/ar_pg'
 require 'logger'
 require 'rbconfig'
 

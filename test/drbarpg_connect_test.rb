@@ -1,7 +1,4 @@
 require 'test_helper'
-require 'drb/ar_pg'
-require 'logger'
-require 'rbconfig'
 
 class DrbarpgConnectTest < ActiveSupport::TestCase
   test "default connect timeout" do
