@@ -18,7 +18,7 @@ development:
   adapter: postgresql
   encoding: unicode
   database: drbarpg_development
-  pool: 5
+  pool: 50
 #   username: drbarpg
 #   password:
 
@@ -47,7 +47,7 @@ test:
   adapter: postgresql
   encoding: unicode
   database: drbarpg_test
-  pool: 5
+  pool: 50
 #   username: drbarpg
 #   password:
 
@@ -55,6 +55,6 @@ production:
   adapter: postgresql
   encoding: unicode
   database: drbarpg_production
-  pool: 5
+  pool: 50
 #   username: drbarpg
 #   password:

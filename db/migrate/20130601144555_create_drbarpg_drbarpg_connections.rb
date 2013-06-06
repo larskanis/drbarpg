@@ -1,8 +1,8 @@
 class CreateDrbarpgDrbarpgConnections < ActiveRecord::Migration
   def change
-    # Only the sequence of this table is used to retrieve a uniqe
-    # client id for notifications. No data is stored in the table.
     create_table :drbarpg_connections do |t|
+      t.text "listen_channel"
     end
+    add_index :drbarpg_connections, "listen_channel", :unique => true
   end
 end
