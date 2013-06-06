@@ -1,3 +1,63 @@
-= Drbarpg
+= drbarpg
+
+A protocol implementation for Distributed Ruby (DRb), supporting connections
+via a PostgreSQL server by using the LISTEN/NOTIFY event system.
 
 This project rocks and uses MIT-LICENSE.
+
+== Usage
+Add to your +Gemfile+ :
+  gem 'drbarpg'
+
+Run
+  $ bundle install
+  $ rake drbarpg:install:migrations
+  $ rake db:migrate
+
+Ensure the value of +pool+ in your +config/database.yml+ is high enough (at least 10).
+
+=== Example server
+  # Startup Rails environment
+  require 'config/environment'
+
+  # start up the DRb service
+  DRb.start_service "drbarpg://myserver", []
+
+  # wait for the DRb service to finish before exiting
+  DRb.thread.join
+
+=== Example client:
+  require 'config/environment'
+
+  # Start a local DRbServer to handle callbacks.
+  #
+  # Not necessary for this small example, but will be required
+  # as soon as we pass a non-marshallable object as an argument
+  # to a dRuby call.
+  DRb.start_service "drbarpg://"
+
+  # attach to the DRb server via the server URI
+  remote_array = DRbObject.new_with_uri("drbarpg://myserver")
+
+  p remote_array.size  # => 0
+
+  remote_array << 1
+
+  p remote_array.size  # => 1
+
+== Description
+
+drbarpg makes it possible to create DRb-connections via the connection to a PostgreSQL server.
+It easily integrates into rails projects and uses the configured database connection for
+inter process communication.
+
+Method calls with a size of less than 8000 bytes for all serialized parameters are directly
+passed through by the NOTIFY payload. This bypasses the transaction overhead in the database,
+so the calls are reasonably fast (approximately 1.5 of the time of a direct DRb-TCP connection).
+Calls with bigger parameter size are transferred by INSERT/SELECT and require transaction
+commits, so they usually take several milliseconds.
+
+== Requirements
+
+* PostgreSQL 9.0+
+* Rails 3.0+

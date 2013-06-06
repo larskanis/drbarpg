@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email       = ["kanis@comcard.de"]
   s.homepage    = "http://github.com/larskanis/drbarpg"
   s.summary     = "Use DRb through your PostgreSQL server connection"
-  s.description = "This gem implements a DRb protocol using PostgreSQL's LISTEN/NOTIFY event system."
+  s.description = "A protocol implementation for Distributed Ruby (DRb), supporting connections through a PostgreSQL server by using the LISTEN/NOTIFY event system."
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
