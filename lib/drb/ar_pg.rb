@@ -53,11 +53,28 @@ module DRb
 
       case act_as
       when :server
-        # Save the connection to the database to ensure that only one server can listen
-        # on a given channel.
-        @conn.exec_insert('INSERT INTO drbarpg_connections (id, listen_channel)
-                          VALUES ($1::int, $2::text)', nil,
-                          [[nil, @listen_connection_id], [nil, @listen_channel]])
+        @conn.transaction do
+          already_running = @conn.exec_query('SELECT id FROM drbarpg_connections WHERE listen_channel = $1::text FOR UPDATE', nil,
+                            [[nil, @listen_channel]]).first
+
+          if already_running
+            # There is already a service running with the same name, we would like to use.
+            # Try to connect to it, to verify it is really yet running.
+            begin
+              self.class.new(nil, nil, listen_channel, :master, config)
+            rescue DRbConnError
+              # Unable to connect to the given server -> the entry
+              # in drbarpg_connections seems to be orphanded.
+              @conn.exec_delete('DELETE FROM drbarpg_connections WHERE id = $1::INT', nil,
+                                [[nil, already_running['id']]])
+            end
+          end
+          # Save the connection to the database to ensure that only one server can listen
+          # on a given channel.
+          @conn.exec_insert('INSERT INTO drbarpg_connections (id, listen_channel)
+                            VALUES ($1::int, $2::text)', nil,
+                            [[nil, @listen_connection_id], [nil, @listen_channel]])
+        end
 
         uri_channel, uri_option = self.class.parse_uri(uri) if uri
         uri = "drbarpg://_#{@listen_connection_id}?#{uri_option}" if uri_channel.nil? || uri_channel.empty?
