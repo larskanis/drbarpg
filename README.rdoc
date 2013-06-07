@@ -18,8 +18,9 @@ Run
 Ensure the value of +pool+ in your +config/database.yml+ is high enough (at least 10).
 
 === Example server
-  # Startup Rails environment
-  require 'config/environment'
+  # Startup your Rails environment to establish database connection.
+  # Only necessary, if running outside of the rails context.
+  require 'path/to/config/environment'
 
   # start up the DRb service
   DRb.start_service "drbarpg://myserver", []
@@ -28,7 +29,9 @@ Ensure the value of +pool+ in your +config/database.yml+ is high enough (at leas
   DRb.thread.join
 
 === Example client:
-  require 'config/environment'
+  # Startup your Rails environment to establish database connection.
+  # Only necessary, if running outside of the rails context.
+  require 'path/to/config/environment'
 
   # Start a local DRbServer to handle callbacks.
   #
