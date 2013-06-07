@@ -21,4 +21,16 @@ class DrbarpgConnectTest < ActiveSupport::TestCase
     dt = Time.now-st
     assert_operator 0.2..0.9, :===, dt
   end
+
+  test "error if two services are started with equal name" do
+    DRb.start_service("drbarpg://myserver", Kernel)
+    begin
+      assert_raise(ActiveRecord::RecordNotUnique) do
+        DRb.start_service("drbarpg://myserver")
+      end
+    ensure
+      DRb.stop_service
+    end
+  end
+
 end
