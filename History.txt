@@ -1,0 +1,8 @@
+=== 0.1.0 / 2013-07-02
+
+* Add connect timeout and config option to set it.
+* Delete unresponsive services from the database, when a service with the same name is started.
+
+=== 0.0.1 / 2013-06-06
+
+* Birthday.
