@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    drbarpg (0.0.1)
+    drbarpg (0.1.0)
       pg
       rails (>= 3.0)
 
